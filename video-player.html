@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Video - EDUCAST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff4444;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 1.5rem;
+        }
+
+        .video-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .video-wrapper {
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            max-height: 70vh;
+        }
+
+        .video-info {
+            margin-top: 1.5rem;
+        }
+
+        .video-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 1rem;
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .video-description {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .uploader-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #ff8844;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .video-container {
+                padding: 0 1rem;
+            }
+            .video-info h1 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EDUCAST</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="upload.html">Upload</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="video-container">
+        <div class="video-wrapper">
+            <video id="videoPlayer" controls autoplay></video>
+        </div>
+        <div class="video-info">
+            <h1 id="videoTitle"></h1>
+            <div class="video-meta">
+                <span><i class="fas fa-eye"></i> <span id="videoViews">0</span> views</span>
+                <span><i class="fas fa-clock"></i> <span id="videoDate"></span></span>
+            </div>
+            <div class="uploader-info">
+                <i class="fas fa-user"></i> Uploaded by: <strong id="uploaderName"></strong>
+            </div>
+            <div class="video-description">
+                <p id="videoDescription"></p>
+            </div>
+        </div>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+
+    <script>
+        // Get video ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoId = urlParams.get('id');
+        
+        if (videoId) {
+            loadVideo(videoId);
+        } else {
+            document.getElementById('videoTitle').innerText = 'Video not found';
+        }
+        
+        function loadVideo(id) {
+            // Get videos from localStorage
+            const videos = JSON.parse(localStorage.getItem('videos') || '[]');
+            const video = videos.find(v => v.id == id);
+            
+            if (video) {
+                document.getElementById('videoPlayer').src = video.videoUrl;
+                document.getElementById('videoTitle').innerText = video.title;
+                document.getElementById('videoDescription').innerText = video.description || 'No description';
+                document.getElementById('uploaderName').innerText = video.uploaderName;
+                document.getElementById('videoViews').innerText = video.views || 0;
+                document.getElementById('videoDate').innerText = new Date(video.date).toLocaleDateString();
+                
+                // Update view count
+                video.views = (video.views || 0) + 1;
+                const allVideos = JSON.parse(localStorage.getItem('videos') || '[]');
+                const index = allVideos.findIndex(v => v.id == id);
+                if (index !== -1) {
+                    allVideos[index].views = video.views;
+                    localStorage.setItem('videos', JSON.stringify(allVideos));
+                }
+            } else {
+                document.getElementById('videoTitle').innerText = 'Video not found';
+            }
+        }
+    </script>
+</body>
+</html>

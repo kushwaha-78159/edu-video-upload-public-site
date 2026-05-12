@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Video - EDUCAST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff4444;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 1.5rem;
+        }
+
+        .upload-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .upload-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .upload-card h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, 
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff4444, #ff8844);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.4);
+        }
+
+        .preview-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .video-preview video {
+            max-width: 200px;
+            border-radius: 8px;
+        }
+
+        .thumbnail-preview img {
+            width: 200px;
+            border-radius: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff4444, #ff8844);
+            transition: width 0.3s;
+        }
+
+        .success-message {
+            background: #4caf50;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .error-message {
+            background: #f44336;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EDUCAST</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="upload.html">Upload</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="upload-container">
+        <div class="upload-card">
+            <h2><i class="fas fa-cloud-upload-alt"></i> Share Your Knowledge</h2>
+            <p style="text-align: center; margin-bottom: 2rem; color: #aaa;">Upload educational videos (Max 128MB)</p>
+            
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Video Title *</label>
+                    <input type="text" id="title" placeholder="e.g., Python Tutorial for Beginners" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="description" rows="3" placeholder="What will viewers learn from this video?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Name (Uploader) *</label>
+                    <input type="text" id="uploaderName" placeholder="Your name or channel name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="category">
+                        <option value="Programming">Programming</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Business">Business</option>
+                        <option value="Design">Design</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="English">English</option>
+                        <option value="Science">Science</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Video File * (MP4, WebM, MKV - Max 128MB)</label>
+                    <input type="file" id="videoFile" accept="video/*" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Thumbnail Image (Optional - JPG, PNG)</label>
+                    <input type="file" id="thumbnail" accept="image/*">
+                </div>
+
+                <div id="preview" class="preview-container"></div>
+
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <div id="message"></div>
+
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-upload"></i> Upload Video
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Preview video
+        document.getElementById('videoFile').addEventListener('change', function(e) {
+            const preview = document.getElementById('preview');
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                preview.innerHTML = `
+                    <div class="video-preview">
+                        <video src="${url}" controls style="max-width: 200px"></video>
+                        <p style="margin-top: 0.5rem">${file.name}</p>
+                        <p style="font-size: 0.8rem">Size: ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                    </div>
+                `;
+            }
+        });
+
+        // Preview thumbnail
+        document.getElementById('thumbnail').addEventListener('change', function(e) {
+            const preview = document.getElementById('preview');
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                const existing = preview.innerHTML;
+                preview.innerHTML = existing + `
+                    <div class="thumbnail-preview">
+                        <img src="${url}" style="width: 200px; border-radius: 8px">
+                    </div>
+                `;
+            }
+        });
+
+        // Upload form submit
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const uploaderName = document.getElementById('uploaderName').value;
+            const category = document.getElementById('category').value;
+            const videoFile = document.getElementById('videoFile').files[0];
+            const thumbnail = document.getElementById('thumbnail').files[0];
+            
+            if (!title || !uploaderName || !videoFile) {
+                showMessage('Please fill all required fields', 'error');
+                return;
+            }
+            
+            // Check file size (128MB max)
+            if (videoFile.size > 128 * 1024 * 1024) {
+                showMessage('Video file is too large! Maximum 128MB allowed.', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('uploaderName', uploaderName);
+            formData.append('category', category);
+            formData.append('video', videoFile);
+            if (thumbnail) {
+                formData.append('thumbnail', thumbnail);
+            }
+            
+            // Show progress bar
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            progressBar.style.display = 'block';
+            progressFill.style.width = '30%';
+            
+            try {
+                const response = await fetch('upload_handler.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                progressFill.style.width = '100%';
+                
+                const result = await response.json();
+                console.log('Response:', result);
+                
+                if (result.success) {
+                    showMessage('✅ Video uploaded successfully! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    showMessage('❌ ' + result.message, 'error');
+                    progressBar.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Upload failed: ' + error.message, 'error');
+                progressBar.style.display = 'none';
+            }
+        });
+        
+        function showMessage(msg, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.innerHTML = `<div class="${type}-message">${msg}</div>`;
+            setTimeout(() => {
+                msgDiv.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
